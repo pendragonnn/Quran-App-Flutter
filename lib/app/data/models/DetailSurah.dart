@@ -12,7 +12,7 @@ class DetailSurah {
     final Name name;
     final Revelation revelation;
     final DetailSurahTafsir tafsir;
-    final PreBismillah preBismillah;
+    final PreBismillah? preBismillah;
     final List<Verse> verses;
 
     DetailSurah({
@@ -33,7 +33,7 @@ class DetailSurah {
         name: Name.fromJson(json["name"]),
         revelation: Revelation.fromJson(json["revelation"]),
         tafsir: DetailSurahTafsir.fromJson(json["tafsir"]),
-        preBismillah: PreBismillah.fromJson(json["preBismillah"]),
+        preBismillah: json["preBismillah"] == null ? null : PreBismillah.fromJson(json["preBismillah"]),
         verses: List<Verse>.from(json["verses"].map((x) => Verse.fromJson(x))),
     );
 
@@ -44,7 +44,7 @@ class DetailSurah {
         "name": name.toJson(),
         "revelation": revelation.toJson(),
         "tafsir": tafsir.toJson(),
-        "preBismillah": preBismillah.toJson(),
+        "preBismillah": preBismillah?.toJson(),
         "verses": List<dynamic>.from(verses.map((x) => x.toJson())),
     };
 }
@@ -217,7 +217,7 @@ class DetailSurahTafsir {
     };
 }
 
-class Verse {
+class  Verse {
     final Number number;
     final Meta meta;
     final Text text;
