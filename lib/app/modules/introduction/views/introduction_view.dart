@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
+import 'package:quran_app/app/constant/color.dart';
 import 'package:quran_app/app/routes/app_pages.dart';
 
 import '../controllers/introduction_controller.dart';
@@ -31,6 +32,7 @@ class IntroductionView extends GetView<IntroductionController> {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 16,
+                  color: Colors.grey,
                 ),
               ),
             ),
@@ -51,6 +53,12 @@ class IntroductionView extends GetView<IntroductionController> {
               onPressed: () => Get.offAllNamed(Routes.HOME),
               child: Text(
                 "Get Started",
+                style: TextStyle(
+                  color: Get.isDarkMode ? appPurpleDark : appWhite,
+                ),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Get.isDarkMode ? appWhite : appPurple,
               ),
             ),
           ],
