@@ -10,6 +10,7 @@ void main() {
     GetMaterialApp(
       debugShowCheckedModeBanner: false,
       theme: themeLight,
+      darkTheme: themeDark,
       title: "Application",
       initialRoute: Routes.HOME,
       getPages: AppPages.routes,
