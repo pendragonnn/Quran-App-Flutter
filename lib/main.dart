@@ -12,7 +12,7 @@ void main() {
       theme: themeLight,
       darkTheme: themeDark,
       title: "Application",
-      initialRoute: Routes.HOME,
+      initialRoute: Routes.INTRODUCTION,
       getPages: AppPages.routes,
     ),
   );

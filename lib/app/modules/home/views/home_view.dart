@@ -11,6 +11,9 @@ class HomeView extends GetView<HomeController> {
   const HomeView({super.key});
   @override
   Widget build(BuildContext context) {
+    if (Get.isDarkMode) {
+      controller.isDark.value = true;
+    }
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -128,7 +131,6 @@ class HomeView extends GetView<HomeController> {
               ),
               TabBar(
                 indicatorColor: appPurpleDark,
-                labelColor: Get.isDarkMode ? appWhite : appPurpleDark,
                 unselectedLabelColor: Colors.grey,
                 tabs: [
                   Tab(text: "Surah"),
@@ -177,28 +179,21 @@ class HomeView extends GetView<HomeController> {
                                     "${surah.number}",
                                     style: TextStyle(
                                       fontSize: 14,
-                                      color: Get.isDarkMode
-                                          ? appWhite
-                                          : appPurpleDark,
                                     ),
                                   ),
                                 ),
                               ),
                               title: Text(
                                 surah.name.transliteration.id,
-                                style: TextStyle(
-                                  color:
-                                      Get.isDarkMode ? appWhite : appPurpleDark,
-                                ),
                               ),
                               subtitle: Text(
-                                  "${surah.numberOfVerses} Ayat | ${surah.revelation.id}"),
+                                "${surah.numberOfVerses} Ayat | ${surah.revelation.id}",
+                                style: TextStyle(
+                                  color: Colors.grey[500],
+                                ),
+                              ),
                               trailing: Text(
                                 surah.name.short,
-                                style: TextStyle(
-                                  color:
-                                      Get.isDarkMode ? appWhite : appPurpleDark,
-                                ),
                               ),
                             );
                           },
@@ -211,8 +206,8 @@ class HomeView extends GetView<HomeController> {
                         return ListTile(
                           onTap: () {},
                           leading: Container(
-                            height: 50,
-                            width: 50,
+                            height: 35,
+                            width: 35,
                             decoration: BoxDecoration(
                               image: DecorationImage(
                                 image: AssetImage("assets/images/list.png"),
@@ -221,19 +216,11 @@ class HomeView extends GetView<HomeController> {
                             child: Center(
                               child: Text(
                                 "${index + 1}",
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color:
-                                      Get.isDarkMode ? appWhite : appPurpleDark,
-                                ),
                               ),
                             ),
                           ),
                           title: Text(
                             "Juz ${index + 1}",
-                            style: TextStyle(
-                              color: Get.isDarkMode ? appWhite : appPurpleDark,
-                            ),
                           ),
                         );
                       },
@@ -246,6 +233,17 @@ class HomeView extends GetView<HomeController> {
               ),
             ],
           ),
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Get.isDarkMode
+              ? Get.changeTheme(themeLight)
+              : Get.changeTheme(themeDark);
+        },
+        child: Icon(
+          Icons.color_lens,
+          color: appPurpleLight1,
         ),
       ),
     );
