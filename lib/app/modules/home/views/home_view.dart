@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:quran_app/app/constant/color.dart';
+import 'package:quran_app/app/data/models/Juz.dart' as juz;
 import 'package:quran_app/app/data/models/Surah.dart';
 import 'package:quran_app/app/routes/app_pages.dart';
 
@@ -200,28 +201,71 @@ class HomeView extends GetView<HomeController> {
                         );
                       },
                     ),
-                    ListView.builder(
-                      itemCount: 30,
-                      itemBuilder: (context, index) {
-                        return ListTile(
-                          onTap: () {},
-                          leading: Container(
-                            height: 35,
-                            width: 35,
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                image: AssetImage("assets/images/list.png"),
-                              ),
+                    FutureBuilder<List<juz.Juz>>(
+                      future: controller.getAllJuz(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                        if (!snapshot.hasData) {
+                          return Center(
+                            child: Text(
+                              "Tidak ada data",
                             ),
-                            child: Center(
-                              child: Text(
-                                "${index + 1}",
+                          );
+                        }
+                        return ListView.builder(
+                          itemCount: snapshot.data!.length,
+                          itemBuilder: (context, index) {
+                            juz.Juz detailJuz = snapshot.data![index];
+                            return ListTile(
+                              onTap: () {
+                                Get.toNamed(Routes.DETAIL_JUZ, arguments: detailJuz);
+                              },
+                              leading: Container(
+                                height: 50,
+                                width: 50,
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: AssetImage("assets/images/list.png"),
+                                  ),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    "${index + 1}",
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                          title: Text(
-                            "Juz ${index + 1}",
-                          ),
+                              title: Text(
+                                "Juz ${index + 1}",
+                              ),
+                              isThreeLine: true,
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    "Mulai dari ${detailJuz.juzStartInfo}",
+                                    style: TextStyle(
+                                      color: Colors.grey[500],
+                                    ),
+                                  ),
+                                  Text(
+                                    "Sampai ${detailJuz.juzEndInfo}",
+                                    style: TextStyle(
+                                      color: Colors.grey[500],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
                         );
                       },
                     ),
