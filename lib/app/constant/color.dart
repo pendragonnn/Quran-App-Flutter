@@ -16,6 +16,8 @@ ThemeData themeLight = ThemeData(
   appBarTheme: AppBarTheme(
     backgroundColor: appPurple,
     elevation: 4,
+    iconTheme: IconThemeData(color: appWhite),
+    titleTextStyle: TextStyle(color: appWhite, fontSize: 20),
   ),
   textTheme: TextTheme(
     bodyMedium: TextStyle(color: appPurpleDark),

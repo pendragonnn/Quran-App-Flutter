@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:quran_app/app/constant/color.dart';
 import 'package:quran_app/app/data/models/DetailSurah.dart' as detail;
 import 'package:quran_app/app/data/models/Surah.dart';
 
@@ -13,42 +14,78 @@ class DetailSurahView extends GetView<DetailSurahController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('SURAH ${surah.name.transliteration.id.toUpperCase()}'),
+        title: Text(
+          'SURAH ${surah.name.transliteration.id.toUpperCase()}',
+        ),
         centerTitle: true,
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: ListView(
           children: [
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  children: [
-                    Text(
-                      "${surah.name.transliteration.id.toUpperCase()}",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
+            GestureDetector(
+              onTap: () => Get.defaultDialog(
+                backgroundColor: Get.isDarkMode ? appPurpleLight1 : appWhite,
+                titlePadding: EdgeInsets.only(
+                  top: 30,
+                ),
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: 30,
+                  vertical: 10,
+                ),
+                title: "Tafsir ${surah.name.transliteration.id}",
+                titleStyle: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+                content: Container(
+                  child: Text(
+                    surah.tafsir.id,
+                    textAlign: TextAlign.left,
+                  ),
+                ),
+              ),
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  gradient: LinearGradient(
+                    colors: [
+                      appPurpleLight1,
+                      appPurpleDark,
+                    ],
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    children: [
+                      Text(
+                        "${surah.name.transliteration.id.toUpperCase()}",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: appWhite,
+                        ),
                       ),
-                    ),
-                    Text(
-                      "(${surah.name.translation.id})",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+                      Text(
+                        "(${surah.name.translation.id})",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: appWhite,
+                        ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      "${surah.numberOfVerses} Ayat | ${surah.revelation.id}",
-                      style: TextStyle(
-                        fontSize: 16,
+                      SizedBox(
+                        height: 10,
                       ),
-                    ),
-                  ],
+                      Text(
+                        "${surah.numberOfVerses} Ayat | ${surah.revelation.id}",
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: appWhite,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -72,7 +109,7 @@ class DetailSurahView extends GetView<DetailSurahController> {
                   child: ListView.builder(
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
-                    itemCount: snapshot.data?.verses?.length ?? 0,
+                    itemCount: snapshot.data?.verses.length ?? 0,
                     itemBuilder: (context, index) {
                       if (snapshot.data!.verses.length == 0) {
                         return SizedBox();
@@ -83,7 +120,11 @@ class DetailSurahView extends GetView<DetailSurahController> {
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          Card(
+                          Container(
+                            decoration: BoxDecoration(
+                              color: appPurpleLight1.withOpacity(0.3),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
                             child: Padding(
                               padding: const EdgeInsets.symmetric(
                                 vertical: 5,
@@ -93,8 +134,19 @@ class DetailSurahView extends GetView<DetailSurahController> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  CircleAvatar(
-                                    child: Text("${index + 1}"),
+                                  Container(
+                                    height: 40,
+                                    width: 40,
+                                    decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                        image: AssetImage(
+                                            "assets/images/list.png"),
+                                        fit: BoxFit.contain,
+                                      ),
+                                    ),
+                                    child: Center(
+                                      child: Text("${index + 1}"),
+                                    ),
                                   ),
                                   Row(
                                     children: [
