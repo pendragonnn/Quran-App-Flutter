@@ -223,7 +223,8 @@ class HomeView extends GetView<HomeController> {
                             juz.Juz detailJuz = snapshot.data![index];
                             return ListTile(
                               onTap: () {
-                                Get.toNamed(Routes.DETAIL_JUZ, arguments: detailJuz);
+                                Get.toNamed(Routes.DETAIL_JUZ,
+                                    arguments: detailJuz);
                               },
                               leading: Container(
                                 height: 50,
