@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:quran_app/app/data/models/Juz.dart' as juz;
+import 'package:quran_app/app/data/models/Surah.dart';
 
 import '../../../constant/color.dart';
 import '../controllers/detail_juz_controller.dart';
@@ -13,7 +14,11 @@ class DetailJuzView extends GetView<DetailJuzController> {
 
   @override
   Widget build(BuildContext context) {
-    juz.Juz detailJuz = Get.arguments;
+    juz.Juz detailJuz = Get.arguments["juz"];
+    List<Surah> allSurahInThisJust = Get.arguments["surah"];
+    allSurahInThisJust.forEach((element) {
+      print(element.name.transliteration.id);
+    });
     return Scaffold(
       appBar: AppBar(
         title: Text('Juz ${detailJuz.juz}'),
@@ -29,6 +34,12 @@ class DetailJuzView extends GetView<DetailJuzController> {
             );
           }
           juz.Verses ayat = detailJuz.verses![index];
+          if (index != 0) {
+            if (ayat.number?.inSurah == 1) {
+              controller.index++;
+            }
+          }
+
           return Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
@@ -45,18 +56,32 @@ class DetailJuzView extends GetView<DetailJuzController> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Container(
-                        height: 40,
-                        width: 40,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage("assets/images/list.png"),
-                            fit: BoxFit.contain,
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            margin: EdgeInsets.only(right: 10),
+                            height: 40,
+                            width: 40,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage("assets/images/list.png"),
+                                fit: BoxFit.contain,
+                              ),
+                            ),
+                            child: Center(
+                              child: Text("${ayat.number?.inSurah}"),
+                            ),
                           ),
-                        ),
-                        child: Center(
-                          child: Text("${ayat.number?.inSurah}"),
-                        ),
+                          Text(
+                            allSurahInThisJust[controller.index]
+                                .name
+                                .transliteration
+                                .id,
+                            style: TextStyle(
+                                fontStyle: FontStyle.italic, fontSize: 15),
+                          ),
+                        ],
                       ),
                       Row(
                         children: [
