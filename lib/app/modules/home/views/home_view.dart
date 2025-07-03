@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:quran_app/app/constant/color.dart';
-import 'package:quran_app/app/data/models/Juz.dart' as juz;
+import 'package:quran_app/app/data/models/DetailSurah.dart' as detail;
 import 'package:quran_app/app/data/models/Surah.dart';
 import 'package:quran_app/app/routes/app_pages.dart';
 
@@ -201,7 +201,7 @@ class HomeView extends GetView<HomeController> {
                         );
                       },
                     ),
-                    FutureBuilder<List<juz.Juz>>(
+                    FutureBuilder<List<Map<String, dynamic>>>(
                       future: controller.getAllJuz(),
                       builder: (context, snapshot) {
                         if (snapshot.connectionState ==
@@ -210,47 +210,22 @@ class HomeView extends GetView<HomeController> {
                             child: CircularProgressIndicator(),
                           );
                         }
+
                         if (!snapshot.hasData) {
                           return Center(
-                            child: Text(
-                              "Tidak ada data",
-                            ),
+                            child: Text("Tidak ada data"),
                           );
                         }
+
                         return ListView.builder(
                           itemCount: snapshot.data!.length,
                           itemBuilder: (context, index) {
-                            juz.Juz detailJuz = snapshot.data![index];
-
-                            String nameStart =
-                                detailJuz.juzStartInfo!.split(" - ").first;
-                            String nameEnd =
-                                detailJuz.juzEndInfo!.split(" - ").first;
-
-                            List<Surah> rawAllSurahInJuz = [];
-                            List<Surah> allSurahInJuz = [];
-
-                            for (Surah item in controller.allSurah) {
-                              rawAllSurahInJuz.add(item);
-                              if (item.name.transliteration.id == nameEnd) {
-                                break;
-                              }
-                            }
-
-                            for (Surah item
-                                in rawAllSurahInJuz.reversed.toList()) {
-                              allSurahInJuz.add(item);
-                              if (item.name.transliteration.id == nameStart) {
-                                break;
-                              }
-                            }
-
+                            Map<String, dynamic> dataMapPerJuz =
+                                snapshot.data![index];
                             return ListTile(
                               onTap: () {
-                                Get.toNamed(Routes.DETAIL_JUZ, arguments: {
-                                  "juz": detailJuz,
-                                  "surah": allSurahInJuz.reversed.toList(),
-                                });
+                                Get.toNamed(Routes.DETAIL_JUZ,
+                                    arguments: dataMapPerJuz);
                               },
                               leading: Container(
                                 height: 50,
@@ -278,13 +253,13 @@ class HomeView extends GetView<HomeController> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Text(
-                                    "Mulai dari ${detailJuz.juzStartInfo}",
+                                    "Mulai dari ${(dataMapPerJuz["start"]["surah"] as detail.DetailSurah).name.transliteration.id} ayat ${(dataMapPerJuz["start"]["ayat"] as detail.Verse).number.inSurah.toString()}",
                                     style: TextStyle(
                                       color: Colors.grey[500],
                                     ),
                                   ),
                                   Text(
-                                    "Sampai ${detailJuz.juzEndInfo}",
+                                    "Sampai ${(dataMapPerJuz["end"]["surah"] as detail.DetailSurah).name.transliteration.id} ayat ${(dataMapPerJuz["end"]["ayat"] as detail.Verse).number.inSurah.toString()}",
                                     style: TextStyle(
                                       color: Colors.grey[500],
                                     ),

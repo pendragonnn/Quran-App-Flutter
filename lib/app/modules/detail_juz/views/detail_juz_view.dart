@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
-import 'package:quran_app/app/data/models/Juz.dart' as juz;
-import 'package:quran_app/app/data/models/Surah.dart';
-
+import 'package:quran_app/app/data/models/DetailSurah.dart' as detail;
 import '../../../constant/color.dart';
 import '../controllers/detail_juz_controller.dart';
 
@@ -14,35 +12,100 @@ class DetailJuzView extends GetView<DetailJuzController> {
 
   @override
   Widget build(BuildContext context) {
-    juz.Juz detailJuz = Get.arguments["juz"];
-    List<Surah> allSurahInThisJust = Get.arguments["surah"];
-    allSurahInThisJust.forEach((element) {
-      print(element.name.transliteration.id);
-    });
+    Map<String, dynamic> dataMapPerJuz = Get.arguments;
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Juz ${detailJuz.juz}'),
+        title: Text('Juz ${dataMapPerJuz["juz"]}'),
         centerTitle: true,
       ),
       body: ListView.builder(
         padding: EdgeInsets.all(20),
-        itemCount: detailJuz.verses!.length,
+        itemCount: (dataMapPerJuz["verses"] as List).length,
         itemBuilder: (context, index) {
-          if (detailJuz.verses == null || detailJuz.verses?.length == 0) {
+          if (dataMapPerJuz["verses"] == null ||
+              dataMapPerJuz["verses"].length == 0) {
             return Center(
               child: Text("Tidak ada data"),
             );
           }
-          juz.Verses ayat = detailJuz.verses![index];
-          if (index != 0) {
-            if (ayat.number?.inSurah == 1) {
-              controller.index++;
-            }
-          }
+
+          Map<String, dynamic> ayat = dataMapPerJuz["verses"][index];
+          detail.DetailSurah surah = ayat["surah"];
 
           return Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
+              if ((ayat["ayat"] as detail.Verse).number.inSurah == 1)
+                GestureDetector(
+                  onTap: () => Get.defaultDialog(
+                    backgroundColor:
+                        Get.isDarkMode ? appPurpleLight1 : appWhite,
+                    titlePadding: EdgeInsets.only(
+                      top: 30,
+                    ),
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: 30,
+                      vertical: 10,
+                    ),
+                    title: "Tafsir ${surah.name.transliteration.id}",
+                    titleStyle: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                    content: Container(
+                      child: Text(
+                        surah.tafsir.id,
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                  ),
+                  child: Container(
+                    width: Get.width,
+                    margin: EdgeInsets.only(bottom: 20),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      gradient: LinearGradient(
+                        colors: [
+                          appPurpleLight1,
+                          appPurpleDark,
+                        ],
+                      ),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        children: [
+                          Text(
+                            "${surah.name.transliteration.id.toUpperCase()}",
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: appWhite,
+                            ),
+                          ),
+                          Text(
+                            "(${surah.name.translation.id})",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: appWhite,
+                            ),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Text(
+                            "${surah.numberOfVerses} Ayat | ${surah.revelation.id}",
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: appWhite,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
               Container(
                 decoration: BoxDecoration(
                   color: appPurpleLight1.withOpacity(0.3),
@@ -70,14 +133,12 @@ class DetailJuzView extends GetView<DetailJuzController> {
                               ),
                             ),
                             child: Center(
-                              child: Text("${ayat.number?.inSurah}"),
+                              child: Text(
+                                  "${(ayat["ayat"] as detail.Verse).number.inSurah}"),
                             ),
                           ),
                           Text(
-                            allSurahInThisJust[controller.index]
-                                .name
-                                .transliteration
-                                .id,
+                            "${surah.name.transliteration.id}",
                             style: TextStyle(
                                 fontStyle: FontStyle.italic, fontSize: 15),
                           ),
@@ -107,7 +168,7 @@ class DetailJuzView extends GetView<DetailJuzController> {
                 height: 20,
               ),
               Text(
-                "${ayat.text?.arab}",
+                "${(ayat['ayat'] as detail.Verse).text?.arab}",
                 textAlign: TextAlign.right,
                 style: TextStyle(
                   fontSize: 25,
@@ -117,7 +178,7 @@ class DetailJuzView extends GetView<DetailJuzController> {
                 height: 10,
               ),
               Text(
-                "${ayat.text!.transliteration?.en}",
+                "${(ayat['ayat'] as detail.Verse).text.transliteration.en}",
                 textAlign: TextAlign.right,
                 style: TextStyle(
                   fontSize: 18,
@@ -128,8 +189,8 @@ class DetailJuzView extends GetView<DetailJuzController> {
                 height: 25,
               ),
               Text(
-                "${ayat.translation!.id}",
-                textAlign: TextAlign.justify,
+                "${(ayat['ayat'] as detail.Verse).translation.id}",
+                textAlign: TextAlign.left,
                 style: TextStyle(
                   fontSize: 18,
                 ),
