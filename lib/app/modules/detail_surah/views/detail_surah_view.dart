@@ -157,7 +157,9 @@ class DetailSurahView extends GetView<DetailSurahController> {
                                         ),
                                       ),
                                       IconButton(
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          controller.playAudio(ayat.audio.primary);
+                                        },
                                         icon: Icon(
                                           Icons.play_arrow,
                                         ),
