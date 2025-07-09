@@ -148,8 +148,8 @@ class DetailSurahView extends GetView<DetailSurahController> {
                                       child: Text("${index + 1}"),
                                     ),
                                   ),
-                                  Obx(
-                                    () => Row(
+                                  GetBuilder<DetailSurahController>(
+                                    builder: (c) => Row(
                                       children: [
                                         IconButton(
                                           onPressed: () {},
@@ -157,12 +157,10 @@ class DetailSurahView extends GetView<DetailSurahController> {
                                             Icons.bookmark_add_outlined,
                                           ),
                                         ),
-                                        (controller.audioCondition.value ==
-                                                "stop")
+                                        (ayat.audioCondition == "stop")
                                             ? IconButton(
                                                 onPressed: () {
-                                                  controller.playAudio(
-                                                      ayat.audio.primary);
+                                                  c.playAudio(ayat);
                                                 },
                                                 icon: Icon(
                                                   Icons.play_arrow,
@@ -171,13 +169,11 @@ class DetailSurahView extends GetView<DetailSurahController> {
                                             : Row(
                                                 mainAxisSize: MainAxisSize.min,
                                                 children: [
-                                                  (controller.audioCondition
-                                                              .value ==
+                                                  (ayat.audioCondition ==
                                                           "playing")
                                                       ? IconButton(
                                                           onPressed: () {
-                                                            controller
-                                                                .pauseAudio();
+                                                            c.pauseAudio(ayat);
                                                           },
                                                           icon: Icon(
                                                             Icons.pause,
@@ -185,8 +181,7 @@ class DetailSurahView extends GetView<DetailSurahController> {
                                                         )
                                                       : IconButton(
                                                           onPressed: () {
-                                                            controller
-                                                                .resumeAudio();
+                                                            c.resumeAudio(ayat);
                                                           },
                                                           icon: Icon(
                                                             Icons.play_arrow,
@@ -194,7 +189,7 @@ class DetailSurahView extends GetView<DetailSurahController> {
                                                         ),
                                                   IconButton(
                                                     onPressed: () {
-                                                      controller.stopAudio();
+                                                      c.stopAudio(ayat);
                                                     },
                                                     icon: Icon(
                                                       Icons.stop,

@@ -6,7 +6,8 @@ import 'package:http/http.dart' as http;
 
 class DetailSurahController extends GetxController {
   final player = AudioPlayer();
-  RxString audioCondition = "stop".obs;
+
+  Verse? lastVerse;
 
   Future<DetailSurah> getDetailSurah(String id) async {
     Uri url = Uri.parse("https://api.quran.gading.dev/surah/$id");
@@ -18,10 +19,11 @@ class DetailSurahController extends GetxController {
     return DetailSurah.fromJson(data);
   }
 
-  void pauseAudio() async {
+  void pauseAudio(Verse ayat) async {
     try {
       await player.pause();
-      audioCondition.value = "pause";
+      ayat.audioCondition = "pause";
+      update();
     } on PlayerException catch (e) {
       Get.defaultDialog(
           title: "Terjadi Kesalahan", middleText: e.message.toString());
@@ -36,11 +38,13 @@ class DetailSurahController extends GetxController {
     }
   }
 
-  void resumeAudio() async {
+  void resumeAudio(Verse ayat) async {
     try {
-      audioCondition.value = "playing";
+      ayat.audioCondition = "playing";
+      update();
       await player.play();
-      audioCondition.value = "stop";
+      ayat.audioCondition = "stop";
+      update();
     } on PlayerException catch (e) {
       Get.defaultDialog(
           title: "Terjadi Kesalahan", middleText: e.message.toString());
@@ -55,10 +59,11 @@ class DetailSurahController extends GetxController {
     }
   }
 
-  void stopAudio() async {
+  void stopAudio(Verse ayat) async {
     try {
       await player.stop();
-      audioCondition.value = "stop";
+      ayat.audioCondition = "stop";
+      update();
     } on PlayerException catch (e) {
       Get.defaultDialog(
           title: "Terjadi Kesalahan", middleText: e.message.toString());
@@ -73,14 +78,25 @@ class DetailSurahController extends GetxController {
     }
   }
 
-  void playAudio(String url) async {
+  void playAudio(Verse ayat) async {
     try {
+      if (lastVerse == null) {
+        lastVerse = ayat;
+      }
+
+      lastVerse!.audioCondition = "stop";
+      lastVerse = ayat;
+      lastVerse!.audioCondition = "stop";
+      update();
+
       await player.stop();
-      await player.setUrl(url);
-      audioCondition.value = "playing";
+      await player.setUrl(ayat.audio.primary);
+      ayat.audioCondition = "playing";
+      update();
       await player.play();
-      audioCondition.value = "stop";
+      ayat.audioCondition = "stop";
       await player.stop();
+      update();
     } on PlayerException catch (e) {
       Get.defaultDialog(
           title: "Terjadi Kesalahan", middleText: e.message.toString());
