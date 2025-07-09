@@ -148,23 +148,62 @@ class DetailSurahView extends GetView<DetailSurahController> {
                                       child: Text("${index + 1}"),
                                     ),
                                   ),
-                                  Row(
-                                    children: [
-                                      IconButton(
-                                        onPressed: () {},
-                                        icon: Icon(
-                                          Icons.bookmark_add_outlined,
+                                  Obx(
+                                    () => Row(
+                                      children: [
+                                        IconButton(
+                                          onPressed: () {},
+                                          icon: Icon(
+                                            Icons.bookmark_add_outlined,
+                                          ),
                                         ),
-                                      ),
-                                      IconButton(
-                                        onPressed: () {
-                                          controller.playAudio(ayat.audio.primary);
-                                        },
-                                        icon: Icon(
-                                          Icons.play_arrow,
-                                        ),
-                                      ),
-                                    ],
+                                        (controller.audioCondition.value ==
+                                                "stop")
+                                            ? IconButton(
+                                                onPressed: () {
+                                                  controller.playAudio(
+                                                      ayat.audio.primary);
+                                                },
+                                                icon: Icon(
+                                                  Icons.play_arrow,
+                                                ),
+                                              )
+                                            : Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  (controller.audioCondition
+                                                              .value ==
+                                                          "playing")
+                                                      ? IconButton(
+                                                          onPressed: () {
+                                                            controller
+                                                                .pauseAudio();
+                                                          },
+                                                          icon: Icon(
+                                                            Icons.pause,
+                                                          ),
+                                                        )
+                                                      : IconButton(
+                                                          onPressed: () {
+                                                            controller
+                                                                .resumeAudio();
+                                                          },
+                                                          icon: Icon(
+                                                            Icons.play_arrow,
+                                                          ),
+                                                        ),
+                                                  IconButton(
+                                                    onPressed: () {
+                                                      controller.stopAudio();
+                                                    },
+                                                    icon: Icon(
+                                                      Icons.stop,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                      ],
+                                    ),
                                   ),
                                 ],
                               ),
