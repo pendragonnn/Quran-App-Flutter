@@ -152,7 +152,23 @@ class DetailSurahView extends GetView<DetailSurahController> {
                                     builder: (c) => Row(
                                       children: [
                                         IconButton(
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            Get.defaultDialog(
+                                              title: "Bookmark",
+                                              middleText:
+                                                  "Pilih Jenis Bookmark",
+                                              actions: [
+                                                ElevatedButton(
+                                                  onPressed: () {},
+                                                  child: Text("Last Read"),
+                                                ),
+                                                ElevatedButton(
+                                                  onPressed: () {},
+                                                  child: Text("Bookmark"),
+                                                ),
+                                              ],
+                                            );
+                                          },
                                           icon: Icon(
                                             Icons.bookmark_add_outlined,
                                           ),
