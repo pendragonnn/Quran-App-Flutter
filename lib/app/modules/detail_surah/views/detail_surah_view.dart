@@ -159,11 +159,15 @@ class DetailSurahView extends GetView<DetailSurahController> {
                                                   "Pilih Jenis Bookmark",
                                               actions: [
                                                 ElevatedButton(
-                                                  onPressed: () {},
+                                                  onPressed: () {
+                                                    c.addBookmark(true, snapshot.data!, ayat, index);
+                                                  },
                                                   child: Text("Last Read"),
                                                 ),
                                                 ElevatedButton(
-                                                  onPressed: () {},
+                                                  onPressed: () {
+                                                    c.addBookmark(false, snapshot.data!, ayat, index);
+                                                  },
                                                   child: Text("Bookmark"),
                                                 ),
                                               ],
