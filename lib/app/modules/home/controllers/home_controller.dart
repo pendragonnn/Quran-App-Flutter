@@ -27,6 +27,15 @@ class HomeController extends GetxController {
     }
   }
 
+  deleteBookmark(int id) async {
+    Database db = await database.db;
+    await db.delete("bookmark", where: "id = $id");
+
+    update();
+    Get.snackbar("Berhasil", "Telah berhasil menghapus bookmark",
+        colorText: appWhite);
+  }
+
   Future<List<Map<String, dynamic>>> getBookmark() async {
     Database db = await database.db;
     List<Map<String, dynamic>> allBookmarks =
