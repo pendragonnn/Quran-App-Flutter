@@ -4,12 +4,16 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:quran_app/app/constant/color.dart';
+import 'package:quran_app/app/data/db/bookmark.dart';
 import 'package:quran_app/app/data/models/DetailSurah.dart';
 import 'package:quran_app/app/data/models/Surah.dart';
+import 'package:sqflite/sqflite.dart';
 
 class HomeController extends GetxController {
   RxBool isDark = false.obs;
   List<Surah> allSurah = [];
+
+  DatabaseManager database = DatabaseManager.instance;
 
   void changeTemeMode() async {
     Get.isDarkMode ? Get.changeTheme(themeLight) : Get.changeTheme(themeDark);
@@ -21,6 +25,13 @@ class HomeController extends GetxController {
     } else {
       box.write("themeDark", true);
     }
+  }
+
+  Future<List<Map<String, dynamic>>> getBookmark() async {
+    Database db = await database.db;
+    List<Map<String, dynamic>> allBookmarks =
+        await db.query("bookmark", where: "last_read = 0");
+    return allBookmarks;
   }
 
   Future<List<Surah>> getAllSurah() async {
