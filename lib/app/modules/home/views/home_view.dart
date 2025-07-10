@@ -298,9 +298,14 @@ class HomeView extends GetView<HomeController> {
                                 },
                                 leading:
                                     CircleAvatar(child: Text("${index + 1}")),
-                                title: Text("${data['surah']}"),
+                                title: Text(
+                                    "${data['surah'].toString().replaceAll("+", "'")}"),
                                 subtitle: Text(
                                     "Ayat ${data['ayat']} - Via ${data['via']}"),
+                                trailing: IconButton(
+                                  onPressed: () {},
+                                  icon: Icon(Icons.delete),
+                                ),
                               );
                             },
                           );
