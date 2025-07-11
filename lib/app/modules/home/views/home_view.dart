@@ -48,87 +48,195 @@ class HomeView extends GetView<HomeController> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              Container(
-                margin: EdgeInsets.symmetric(
-                  vertical: 20,
-                ),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  gradient: LinearGradient(
-                    colors: [
-                      appPurpleLight1,
-                      appPurpleDark,
-                    ],
-                  ),
-                ),
-                child: Material(
-                  color: Colors.transparent,
-                  borderRadius: BorderRadius.circular(20),
-                  child: InkWell(
-                    onTap: () => Get.toNamed(Routes.LAST_READ),
-                    borderRadius: BorderRadius.circular(20),
-                    child: Container(
-                      child: Stack(
-                        children: [
-                          Positioned(
-                            bottom: -50,
-                            right: 0,
-                            child: Opacity(
-                              opacity: 0.6,
-                              child: Container(
-                                width: 200,
-                                height: 200,
-                                child: Image.asset(
-                                  "assets/images/alquran.png",
-                                  fit: BoxFit.contain,
-                                ),
-                              ),
-                            ),
+              GetBuilder<HomeController>(
+                builder: (c) => FutureBuilder<Map<String, dynamic>?>(
+                    future: c.getLastRead(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Container(
+                          margin: EdgeInsets.symmetric(
+                            vertical: 20,
                           ),
-                          Padding(
-                            padding: const EdgeInsets.all(20.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Icon(
-                                      Icons.menu_book_rounded,
-                                      color: appWhite,
-                                    ),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    Text(
-                                      "Terakhir Dibaca",
-                                      style: TextStyle(color: appWhite),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 30,
-                                ),
-                                Text(
-                                  "Al-Fatihah",
-                                  style: TextStyle(
-                                    color: appWhite,
-                                    fontSize: 20,
-                                  ),
-                                ),
-                                Text(
-                                  "Juz 1 | Ayat 5",
-                                  style: TextStyle(
-                                    color: appWhite,
-                                  ),
-                                ),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            gradient: LinearGradient(
+                              colors: [
+                                appPurpleLight1,
+                                appPurpleDark,
                               ],
                             ),
                           ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+                          child: Stack(
+                            children: [
+                              Positioned(
+                                bottom: -50,
+                                right: 0,
+                                child: Opacity(
+                                  opacity: 0.6,
+                                  child: Container(
+                                    width: 200,
+                                    height: 200,
+                                    child: Image.asset(
+                                      "assets/images/alquran.png",
+                                      fit: BoxFit.contain,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(20.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Icon(
+                                          Icons.menu_book_rounded,
+                                          color: appWhite,
+                                        ),
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        Text(
+                                          "Terakhir Dibaca",
+                                          style: TextStyle(color: appWhite),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      height: 30,
+                                    ),
+                                    Text(
+                                      "Loading",
+                                      style: TextStyle(
+                                        color: appWhite,
+                                        fontSize: 20,
+                                      ),
+                                    ),
+                                    Text(
+                                      "",
+                                      style: TextStyle(
+                                        color: appWhite,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+                      Map<String, dynamic>? lastRead = snapshot.data;
+
+                      return Container(
+                        margin: EdgeInsets.symmetric(
+                          vertical: 20,
+                        ),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          gradient: LinearGradient(
+                            colors: [
+                              appPurpleLight1,
+                              appPurpleDark,
+                            ],
+                          ),
+                        ),
+                        child: Material(
+                          color: Colors.transparent,
+                          borderRadius: BorderRadius.circular(20),
+                          child: InkWell(
+                            onLongPress: () {
+                              if (lastRead != null) {
+                                Get.defaultDialog(
+                                    title: "Delete Last Read",
+                                    middleText: "Delete this last read?",
+                                    actions: [
+                                      OutlinedButton(
+                                          onPressed: () => Get.back(),
+                                          child: Text("Cancel")),
+                                      ElevatedButton(
+                                          onPressed: () {
+                                            c.deleteLastRead(lastRead["id"]);
+                                          },
+                                          child: Text("Delete")),
+                                    ]);
+                              }
+                            },
+                            onTap: () {
+                              if (lastRead != null) {
+                                print(lastRead);
+                              }
+                            },
+                            borderRadius: BorderRadius.circular(20),
+                            child: Container(
+                              child: Stack(
+                                children: [
+                                  Positioned(
+                                    bottom: -50,
+                                    right: 0,
+                                    child: Opacity(
+                                      opacity: 0.6,
+                                      child: Container(
+                                        width: 200,
+                                        height: 200,
+                                        child: Image.asset(
+                                          "assets/images/alquran.png",
+                                          fit: BoxFit.contain,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(20.0),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Icon(
+                                              Icons.menu_book_rounded,
+                                              color: appWhite,
+                                            ),
+                                            SizedBox(
+                                              width: 10,
+                                            ),
+                                            Text(
+                                              "Terakhir Dibaca",
+                                              style: TextStyle(color: appWhite),
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(
+                                          height: 30,
+                                        ),
+                                        Text(
+                                          lastRead == null
+                                              ? ""
+                                              : "${lastRead['surah'].toString().replaceAll("+", "'")}",
+                                          style: TextStyle(
+                                            color: appWhite,
+                                            fontSize: 20,
+                                          ),
+                                        ),
+                                        Text(
+                                          lastRead == null
+                                              ? "Belum ada data"
+                                              : "Juz ${lastRead['juz']} | Ayat ${lastRead['ayat']}",
+                                          style: TextStyle(
+                                            color: appWhite,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    }),
               ),
               TabBar(
                 indicatorColor: appPurpleDark,

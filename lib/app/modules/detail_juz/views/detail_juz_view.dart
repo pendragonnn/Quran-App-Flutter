@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:quran_app/app/data/models/DetailSurah.dart' as detail;
+import 'package:quran_app/app/modules/home/controllers/home_controller.dart';
 import '../../../constant/color.dart';
 import '../controllers/detail_juz_controller.dart';
 
@@ -13,6 +14,8 @@ class DetailJuzView extends GetView<DetailJuzController> {
   @override
   Widget build(BuildContext context) {
     Map<String, dynamic> dataMapPerJuz = Get.arguments;
+
+    final homeC = Get.find<HomeController>();
 
     return Scaffold(
       appBar: AppBar(
@@ -158,9 +161,10 @@ class DetailJuzView extends GetView<DetailJuzController> {
                                       middleText: "Pilih Jenis Bookmark",
                                       actions: [
                                         ElevatedButton(
-                                          onPressed: () {
-                                            c.addBookmark(
+                                          onPressed: () async {
+                                            await c.addBookmark(
                                                 true, surah, verse, index);
+                                            homeC.update();
                                           },
                                           child: Text("Last Read"),
                                         ),

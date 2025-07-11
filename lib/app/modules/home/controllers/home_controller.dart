@@ -27,6 +27,28 @@ class HomeController extends GetxController {
     }
   }
 
+  Future<Map<String, dynamic>?> getLastRead() async {
+    Database db = await database.db;
+    List<Map<String, dynamic>> dataLastRead =
+        await db.query("bookmark", where: "last_read = 1");
+
+    if (dataLastRead.length == 0) {
+      return null;
+    } else {
+      return dataLastRead.first;
+    }
+  }
+
+  deleteLastRead(int id) async {
+    Database db = await database.db;
+    await db.delete("bookmark", where: "id = $id and last_read=1");
+
+    update();
+    Get.back();
+    Get.snackbar("Berhasil", "Telah berhasil menghapus last read",
+        colorText: appWhite);
+  }
+
   deleteBookmark(int id) async {
     Database db = await database.db;
     await db.delete("bookmark", where: "id = $id");

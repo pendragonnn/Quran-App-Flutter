@@ -4,11 +4,13 @@ import 'package:get/get.dart';
 import 'package:quran_app/app/constant/color.dart';
 import 'package:quran_app/app/data/models/DetailSurah.dart' as detail;
 import 'package:quran_app/app/data/models/Surah.dart';
+import 'package:quran_app/app/modules/home/controllers/home_controller.dart';
 
 import '../controllers/detail_surah_controller.dart';
 
 class DetailSurahView extends GetView<DetailSurahController> {
   final Surah surah = Get.arguments;
+  final homeC = Get.find<HomeController>();
 
   @override
   Widget build(BuildContext context) {
@@ -159,14 +161,23 @@ class DetailSurahView extends GetView<DetailSurahController> {
                                                   "Pilih Jenis Bookmark",
                                               actions: [
                                                 ElevatedButton(
-                                                  onPressed: () {
-                                                    c.addBookmark(true, snapshot.data!, ayat, index);
+                                                  onPressed: () async {
+                                                    await c.addBookmark(
+                                                        true,
+                                                        snapshot.data!,
+                                                        ayat,
+                                                        index);
+                                                    homeC.update();
                                                   },
                                                   child: Text("Last Read"),
                                                 ),
                                                 ElevatedButton(
                                                   onPressed: () {
-                                                    c.addBookmark(false, snapshot.data!, ayat, index);
+                                                    c.addBookmark(
+                                                        false,
+                                                        snapshot.data!,
+                                                        ayat,
+                                                        index);
                                                   },
                                                   child: Text("Bookmark"),
                                                 ),
