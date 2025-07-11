@@ -152,7 +152,28 @@ class DetailJuzView extends GetView<DetailJuzController> {
                             builder: (c) => Row(
                               children: [
                                 IconButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    Get.defaultDialog(
+                                      title: "Bookmark",
+                                      middleText: "Pilih Jenis Bookmark",
+                                      actions: [
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            c.addBookmark(
+                                                true, surah, verse, index);
+                                          },
+                                          child: Text("Last Read"),
+                                        ),
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            c.addBookmark(
+                                                false, surah, verse, index);
+                                          },
+                                          child: Text("Bookmark"),
+                                        ),
+                                      ],
+                                    );
+                                  },
                                   icon: Icon(
                                     Icons.bookmark_add_outlined,
                                   ),
