@@ -11,7 +11,9 @@ import 'package:sqflite/sqflite.dart';
 
 class HomeController extends GetxController {
   RxBool isDark = false.obs;
+  RxBool isDataAllJuz = false.obs;
   List<Surah> allSurah = [];
+  List<Map<String, dynamic>> allJuz = [];
 
   DatabaseManager database = DatabaseManager.instance;
 
@@ -60,8 +62,8 @@ class HomeController extends GetxController {
 
   Future<List<Map<String, dynamic>>> getBookmark() async {
     Database db = await database.db;
-    List<Map<String, dynamic>> allBookmarks =
-        await db.query("bookmark", where: "last_read = 0");
+    List<Map<String, dynamic>> allBookmarks = await db.query("bookmark",
+        where: "last_read = 0", orderBy: "juz, via, surah, ayat");
     return allBookmarks;
   }
 
@@ -83,7 +85,6 @@ class HomeController extends GetxController {
     int juz = 1;
 
     List<Map<String, dynamic>> penampungAyat = [];
-    List<Map<String, dynamic>> allJuz = [];
 
     for (var i = 1; i <= 114; i++) {
       var res = await http.get(Uri.parse("http://10.0.2.2:3000/surah/${i}"));

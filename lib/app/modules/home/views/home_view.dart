@@ -272,8 +272,10 @@ class HomeView extends GetView<HomeController> {
                             Surah surah = snapshot.data![index];
                             return ListTile(
                               onTap: () {
-                                Get.toNamed(Routes.DETAIL_SURAH,
-                                    arguments: surah);
+                                Get.toNamed(Routes.DETAIL_SURAH, arguments: {
+                                  "name": surah.name.transliteration.id,
+                                  "number": surah.number
+                                });
                               },
                               leading: Container(
                                 height: 50,
@@ -314,6 +316,7 @@ class HomeView extends GetView<HomeController> {
                       builder: (context, snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
+                          controller.isDataAllJuz.value = false;
                           return Center(
                             child: CircularProgressIndicator(),
                           );
@@ -325,6 +328,8 @@ class HomeView extends GetView<HomeController> {
                           );
                         }
 
+                        controller.isDataAllJuz.value = true;
+
                         return ListView.builder(
                           itemCount: snapshot.data!.length,
                           itemBuilder: (context, index) {
@@ -332,8 +337,9 @@ class HomeView extends GetView<HomeController> {
                                 snapshot.data![index];
                             return ListTile(
                               onTap: () {
-                                Get.toNamed(Routes.DETAIL_JUZ,
-                                    arguments: dataMapPerJuz);
+                                Get.toNamed(Routes.DETAIL_JUZ, arguments: {
+                                  "dataMapPerJuz": dataMapPerJuz
+                                });
                               },
                               leading: Container(
                                 height: 50,
@@ -380,67 +386,107 @@ class HomeView extends GetView<HomeController> {
                       },
                     ),
                     GetBuilder<HomeController>(builder: (c) {
-                      return FutureBuilder<List<Map<String, dynamic>>>(
-                        future: c.getBookmark(),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          }
+                      if (c.isDataAllJuz.isFalse) {
+                        return Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              CircularProgressIndicator(),
+                              SizedBox(
+                                height: 30,
+                              ),
+                              Text("Sedang menunggu data juz..."),
+                            ],
+                          ),
+                        );
+                      } else {
+                        return FutureBuilder<List<Map<String, dynamic>>>(
+                          future: c.getBookmark(),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            }
 
-                          if (snapshot.data!.length == 0) {
-                            return Center(
-                              child: Text("Belum ada bookmark"),
-                            );
-                          }
+                            if (snapshot.data!.length == 0) {
+                              return Center(
+                                child: Text("Belum ada bookmark"),
+                              );
+                            }
 
-                          return ListView.builder(
-                            itemCount: snapshot.data!.length,
-                            itemBuilder: (context, index) {
-                              Map<String, dynamic> data = snapshot.data![index];
-                              return ListTile(
-                                onTap: () {
-                                  print(data);
-                                },
-                                leading: Container(
-                                  height: 50,
-                                  width: 50,
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      image:
-                                          AssetImage("assets/images/list.png"),
+                            controller.isDataAllJuz.value = true;
+
+                            return ListView.builder(
+                              itemCount: snapshot.data!.length,
+                              itemBuilder: (context, index) {
+                                Map<String, dynamic> data =
+                                    snapshot.data![index];
+                                return ListTile(
+                                  onTap: () {
+                                    switch (data["via"]) {
+                                      case "juz":
+                                        Map<String, dynamic> dataMapPerJuz =
+                                            controller.allJuz[data["juz"] - 1];
+                                        Get.toNamed(Routes.DETAIL_JUZ,
+                                            arguments: {
+                                              "dataMapPerJuz": dataMapPerJuz,
+                                              "bookmark": data
+                                            });
+                                        print(data);
+                                        break;
+                                      default:
+                                        Get.toNamed(Routes.DETAIL_SURAH,
+                                            arguments: {
+                                              "name": data["surah"]
+                                                  .toString()
+                                                  .replaceAll("+", "'"),
+                                              "number": data["number_surah"],
+                                              "bookmark": data,
+                                            });
+                                        break;
+                                    }
+                                  },
+                                  leading: Container(
+                                    height: 50,
+                                    width: 50,
+                                    decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                        image: AssetImage(
+                                            "assets/images/list.png"),
+                                      ),
                                     ),
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      "${index + 1}",
-                                      style: TextStyle(
-                                        fontSize: 14,
+                                    child: Center(
+                                      child: Text(
+                                        "${index + 1}",
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                                title: Text(
-                                    "${data['surah'].toString().replaceAll("+", "'")}"),
-                                subtitle: Text(
-                                  "Ayat ${data['ayat']} - Via ${data['via']}",
-                                  style: TextStyle(
-                                    color: Colors.grey[500],
+                                  title: Text(
+                                      "${data['surah'].toString().replaceAll("+", "'")}"),
+                                  subtitle: Text(
+                                    "Ayat ${data['ayat']} - Via ${data['via']}",
+                                    style: TextStyle(
+                                      color: Colors.grey[500],
+                                    ),
                                   ),
-                                ),
-                                trailing: IconButton(
-                                  onPressed: () {
-                                    c.deleteBookmark(data['id']);
-                                  },
-                                  icon: Icon(Icons.delete),
-                                ),
-                              );
-                            },
-                          );
-                        },
-                      );
+                                  trailing: IconButton(
+                                    onPressed: () {
+                                      c.deleteBookmark(data['id']);
+                                    },
+                                    icon: Icon(Icons.delete),
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                        );
+                      }
                     })
                   ],
                 ),
