@@ -24,15 +24,6 @@ class HomeView extends GetView<HomeController> {
           ),
         ),
         centerTitle: true,
-        actions: [
-          IconButton(
-            onPressed: () => Get.toNamed(Routes.SEARCH),
-            icon: Icon(
-              Icons.search,
-              color: appWhite,
-            ),
-          ),
-        ],
       ),
       body: DefaultTabController(
         length: 3,
@@ -164,7 +155,26 @@ class HomeView extends GetView<HomeController> {
                             },
                             onTap: () {
                               if (lastRead != null) {
-                                print(lastRead);
+                                switch (lastRead["via"]) {
+                                  case "juz":
+                                    Map<String, dynamic> dataMapPerJuz =
+                                        controller.allJuz[lastRead["juz"] - 1];
+                                    Get.toNamed(Routes.DETAIL_JUZ, arguments: {
+                                      "dataMapPerJuz": dataMapPerJuz,
+                                      "bookmark": lastRead
+                                    });
+                                    break;
+                                  default:
+                                    Get.toNamed(Routes.DETAIL_SURAH,
+                                        arguments: {
+                                          "name": lastRead["surah"]
+                                              .toString()
+                                              .replaceAll("+", "'"),
+                                          "number": lastRead["number_surah"],
+                                          "bookmark": lastRead,
+                                        });
+                                    break;
+                                }
                               }
                             },
                             borderRadius: BorderRadius.circular(20),
